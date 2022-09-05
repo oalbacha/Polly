@@ -4,7 +4,7 @@ import { prisma } from "../db/client";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = (props: any) => {
-  const { isLoading, data } = trpc.useQuery(["getAllQuestions"]);
+  const { isLoading, data } = trpc.useQuery(["questions.get-all"]);
   console.log("data:", data);
   if (isLoading || !data) {
     <div>Loading...</div>;
