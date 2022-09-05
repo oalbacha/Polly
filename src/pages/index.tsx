@@ -5,12 +5,26 @@ import { prisma } from "../db/client";
 import { trpc } from "../utils/trpc";
 
 const QuestionCreator: React.FC = () => {
-  const { mutate } = trpc.useMutation("questions.create");
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const client = trpc.useContext();
+  const { mutate, isLoading } = trpc.useMutation("questions.create", {
+    onSuccess: (data) => {
+      console.log("data: ", data);
+      client.invalidateQueries(["questions.get-all"]);
+      if (!inputRef.current) return;
+      inputRef.current.value = "";
+    },
+  });
 
   return (
     <input
-      onSubmit={(e) => {
-        console.log(e.currentTarget.value);
+      ref={inputRef}
+      disabled={isLoading}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          console.log(e.currentTarget.value);
+          mutate({ question: e.currentTarget.value });
+        }
       }}
     ></input>
   );
@@ -25,7 +39,9 @@ const Home: NextPage = () => {
     <div>
       <div>
         <div className="text-2xl font-bold">Questions:</div>
-        {data[0]?.question}
+        {data.map((question) => (
+          <div key={question.id}>{question.question}</div>
+        ))}
       </div>
       <QuestionCreator />
     </div>
