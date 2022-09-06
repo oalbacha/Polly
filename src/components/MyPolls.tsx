@@ -2,10 +2,9 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import React from "react";
 import { trpc } from "../utils/trpc";
-import QuestionCreator from "../components/QuestionCreator";
 
-const Home: NextPage = () => {
-  const { isLoading, data } = trpc.useQuery(["questions.get-all"]);
+const MyPolls: NextPage = () => {
+  const { isLoading, data } = trpc.useQuery(["questions.get-all-mine"]);
   console.log("data:", data);
   if (isLoading || !data) return <div>Loading...</div>;
 
@@ -19,9 +18,8 @@ const Home: NextPage = () => {
           </Link>
         ))}
       </div>
-      <QuestionCreator query="get-all" />
     </div>
   );
 };
 
-export default Home;
+export default MyPolls;
