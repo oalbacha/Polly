@@ -5,8 +5,7 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
   const res = NextResponse.next();
   if (req.cookies.get("poll-token")) {
     return;
-  } else {
-    res.cookies.set("poll-token", uuidv4(), { sameSite: "strict" });
   }
+  res.cookies.set("poll-token", uuidv4(), { sameSite: "strict" });
   return res;
 }

@@ -12,12 +12,13 @@ export const questionRouter = createRouter()
   })
   .query("get-by-id", {
     input: z.object({ id: z.string() }),
-    async resolve({ input }) {
-      return await prisma.pollQuestion.findFirst({
+    async resolve({ input, ctx }) {
+      const question = await prisma.pollQuestion.findFirst({
         where: {
           id: input.id,
         },
       });
+      return { question, isOwner: question?.ownerToken === ctx.token };
     },
   })
   .mutation("create", {

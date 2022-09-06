@@ -14,9 +14,10 @@ const QuestionPageContent: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <div className="flex flex-col p-8">
-      <div className="text-2xl font-bold">{data?.question}</div>
+      {data?.isOwner && <div>you created this poll</div>}
+      <div className="text-2xl font-bold">{data?.question?.question}</div>
       <div>
-        {(data?.options as string[])?.map((option) => (
+        {(data?.question?.options as string[])?.map((option) => (
           <div key={option}>{option}</div>
         ))}
       </div>
