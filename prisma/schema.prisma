@@ -19,9 +19,13 @@ model PollQuestion {
   endsAt DateTime?
   
   question String @db.VarChar(5000)
+
+  ownerToken String @db.VarChar(255)
   
   options Json
   Vote Vote[]
+
+  @@index([ownerToken])
 }
 
 model Vote {
@@ -29,7 +33,7 @@ model Vote {
   createdAt DateTime @default(now())
 
   choice Int
-  
+
   question PollQuestion @relation(fields: [questionId], references: [id])
   questionId String 
 }
