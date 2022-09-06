@@ -1,7 +1,7 @@
 import React from "react";
 import { trpc } from "../utils/trpc";
 
-const QuestionCreator: React.FC<{ query: string }> = ({ query }) => {
+const QuestionCreator: React.FC = () => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const client = trpc.useContext();
   const { mutate, isLoading } = trpc.useMutation("questions.create", {

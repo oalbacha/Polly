@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import React from "react";
 import { trpc } from "../utils/trpc";
-import QuestionCreator from "../components/QuestionCreator";
 
 const Home: NextPage = () => {
   const { isLoading, data } = trpc.useQuery(["questions.get-all"]);
@@ -19,7 +18,7 @@ const Home: NextPage = () => {
           </Link>
         ))}
       </div>
-      <QuestionCreator query="get-all" />
+      <Link href={"/create"}>Create a Poll</Link>
     </div>
   );
 };
