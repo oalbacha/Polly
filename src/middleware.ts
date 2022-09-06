@@ -1,12 +1,10 @@
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 export function middleware(req: NextRequest, ev: NextFetchEvent) {
-  console.log("req", req.cookies.get("userCookie"));
-  if (req.cookies.get("userCookie")) return;
-
-  const random = Math.random().toString();
+  if (req.cookies.get("poll-token")) return;
 
   const res = NextResponse.next();
-  res.cookies.set("userCookie", random, { sameSite: "strict", path: "none" });
+  res.cookies.set("poll-token", uuidv4(), { sameSite: "strict" });
   return res;
 }
