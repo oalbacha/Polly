@@ -4,9 +4,9 @@ import React from "react";
 const NavBar: React.FC = () => {
   return (
     <nav>
-      <div className="bg-gray-200 w-full py-1 text-gray-700 flex items-center gap-5">
-        <Link href={"/create"}>
-          <a className="flex items-center justify-center w-28 gap-1 bg-gray-300 p-3 m-4 rounded-xl">
+      <div className="flex items-center w-full gap-5 text-gray-700 bg-gray-200">
+        <Link href={"/"}>
+          <a className="flex items-center justify-center gap-1 p-3 m-3 bg-gray-300 w-28 rounded-xl">
             <span>Create</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
