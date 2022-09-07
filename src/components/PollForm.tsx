@@ -1,14 +1,26 @@
 import React from "react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import { trpc } from "../utils/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  createPollValidator,
+  CreatePollInputType,
+} from "../shared/create-poll-validator";
 
 type Inputs = {
-  title: string;
+  question: string;
   option1: string;
   option2: string;
   fieldArray: { options: string }[];
 };
 
 const PollForm: React.FC = () => {
+  const { mutate, isLoading } = trpc.useMutation("questions.create", {
+    onSuccess: (data) => {
+      console.log("data: ", data);
+    },
+  });
+
   const {
     register,
     handleSubmit,
@@ -16,20 +28,20 @@ const PollForm: React.FC = () => {
     reset,
     watch,
     formState: { errors },
-  } = useForm<Inputs>({});
+  } = useForm<CreatePollInputType>({
+    resolver: zodResolver(createPollValidator),
+  });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<CreatePollInputType>({
     control,
-    name: "fieldArray",
+    name: "options",
     rules: {
       minLength: 4,
     },
   });
 
-  console.log("errors", errors);
-
   const onSubmit = (data: Inputs) => console.log("data", data);
-  const watchFieldArray = watch("fieldArray");
+  const watchFieldArray = watch("options");
   const controlledFields = fields.map((field, index) => {
     return {
       ...field,
@@ -37,24 +49,25 @@ const PollForm: React.FC = () => {
     };
   });
 
-  console.log("updated", controlledFields);
-  console.log("fields", fields);
-
   return (
-    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-    <form className="w-1/2" onSubmit={handleSubmit(onSubmit)}>
+    <form className="w-1/2" onSubmit={handleSubmit((data) => mutate(data))}>
       <div className="">
         <div className="max-w-lg p-5">
           <div className="grid grid-cols-1 gap-y-3 justify-items-end">
-            <label className="flex items-center w-full">
+            <label className="relative flex items-center w-full">
               <span className="w-[20%] p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
                 Poll Title
               </span>
               <input
-                {...register("title")}
+                {...register("question")}
                 type="text"
                 className="block w-[80%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
+              {errors.question && (
+                <p className="absolute text-red-400 right-2">
+                  {errors["question"]?.message}
+                </p>
+              )}
             </label>
             <div className="relative grid w-[80%] gap-y-3">
               <label className="flex">
@@ -62,7 +75,7 @@ const PollForm: React.FC = () => {
                   Option 1
                 </span>
                 <input
-                  {...register("option1")}
+                  {...register("options.0.option")}
                   type="text"
                   className="flex-1 block py-2 text-sm border-2 border-gray-300 shadow-sm w-[70%] rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
@@ -72,7 +85,7 @@ const PollForm: React.FC = () => {
                   Option 2
                 </span>
                 <input
-                  {...register("option2")}
+                  {...register("options.1.option")}
                   type="text"
                   className="block flex-1 w-[70%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
@@ -87,7 +100,7 @@ const PollForm: React.FC = () => {
                       <input
                         type="text"
                         className="block flex-1 w-[70%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        {...register(`fieldArray.${index}.options` as const)}
+                        {...register(`options.${index}.option` as const)}
                       />
                     </label>
                     <button
@@ -117,7 +130,7 @@ const PollForm: React.FC = () => {
                 className="absolute bottom-0 -left-12"
                 disabled={fields.length === 3}
                 type="button"
-                onClick={() => append({ options: "" })}
+                onClick={() => append({ option: "" })}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

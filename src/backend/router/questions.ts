@@ -3,6 +3,7 @@ import { resolve } from "path";
 import { z } from "zod";
 import { prisma } from "../../db/client";
 import { createRouter } from "./context";
+import { createPollValidator } from "../../shared/create-poll-validator";
 
 export const questionRouter = createRouter()
   .query("get-all", {
@@ -34,15 +35,13 @@ export const questionRouter = createRouter()
     },
   })
   .mutation("create", {
-    input: z.object({
-      question: z.string().min(5).max(600),
-    }),
+    input: createPollValidator,
     async resolve({ input, ctx }) {
       if (!ctx.token) return { error: "Unauthorized" };
       return await prisma.pollQuestion.create({
         data: {
           question: input.question,
-          options: [],
+          options: input.options,
           ownerToken: ctx.token,
         },
       });
