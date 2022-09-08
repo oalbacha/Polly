@@ -31,9 +31,28 @@ export const questionRouter = createRouter()
           id: input.id,
         },
       });
-      return { question, isOwner: question?.ownerToken === ctx.token };
+      const myVote = await prisma.vote.findFirst({
+        where: {
+          questionId: input.id,
+          voterToken: ctx.token,
+        },
+      });
+      return { question, vote: myVote, isOwner: question?.ownerToken === ctx.token };
     },
   })
+  .mutation("vote", {
+    input: createPollValidator,
+    async resolve({ input, ctx }) {
+      if (!ctx.token) return { error: "Unauthorized" };
+      return await prisma.pollQuestion.create({
+        data: {
+          question: input.question,
+          options: input.options,
+          ownerToken: ctx.token,
+        },
+      });
+    },
+  });
   .mutation("create", {
     input: createPollValidator,
     async resolve({ input, ctx }) {

@@ -32,6 +32,7 @@ model Vote {
   question PollQuestion @relation(fields: [questionId], references: [id])
   questionId String
 
+  @@unique([voterToken, questionId])
   @@index([voterToken])
   @@index([questionId])
 }
