@@ -7,29 +7,48 @@ import {
   CreatePollInputType,
 } from "../shared/create-poll-validator";
 import { ErrorMessage } from "@hookform/error-message";
+import { useRouter } from "next/router";
 
 const PollForm: React.FC = () => {
-  const { mutate, isLoading } = trpc.useMutation("questions.create", {
-    onSuccess: (data) => {
-      console.log("data: ", data);
-    },
-  });
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
-    clearErrors,
     setError,
+    reset,
     control,
     watch,
     formState: { errors },
   } = useForm<CreatePollInputType>({
     defaultValues: {
       question: "",
-      options: [],
+      options: [
+        {
+          option: "",
+        },
+        { option: "" },
+      ],
     },
     resolver: zodResolver(createPollValidator),
   });
+
+  const { fields, append, remove } = useFieldArray<CreatePollInputType>({
+    control,
+    name: "options",
+    rules: {
+      minLength: 4,
+    },
+  });
+
+  const watchFieldArray = watch("options");
+  const controlledFields = fields.map((field, index) => {
+    return {
+      ...field,
+      ...watchFieldArray[index],
+    };
+  });
+
   console.log("errors:", errors);
 
   React.useEffect(() => {
@@ -43,22 +62,18 @@ const PollForm: React.FC = () => {
     });
   }, [setError]);
 
-  const { fields, append, remove } = useFieldArray<CreatePollInputType>({
-    control,
-    name: "options",
-    rules: {
-      minLength: 4,
+  const { mutate, isLoading, data } = trpc.useMutation("questions.create", {
+    onSuccess: (data) => {
+      console.log("trpc data: ", data);
+      router.push(`/question/${data.id}`);
+      reset();
     },
   });
 
-  const onSubmit = (data: CreatePollInputType) => console.log("data", data);
-  const watchFieldArray = watch("options");
-  const controlledFields = fields.map((field, index) => {
-    return {
-      ...field,
-      ...watchFieldArray[index],
-    };
-  });
+  if (isLoading || data) return <div>Loading...</div>;
+
+  const onSubmit = (data: CreatePollInputType) =>
+    console.log("hook form data", data);
 
   return (
     <form className="w-1/2" onSubmit={handleSubmit((data) => mutate(data))}>
@@ -90,7 +105,7 @@ const PollForm: React.FC = () => {
                             className="relative flex-1 block py-2 mr-[3px] text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             {...register(`options.${index}.option` as const)}
                           />
-                          {errors.options[index] && (
+                          {errors && errors?.options?.[index] && (
                             <p className="absolute text-xs italic text-red-400 right-3">
                               {errors.options[index]?.option?.message}
                             </p>
