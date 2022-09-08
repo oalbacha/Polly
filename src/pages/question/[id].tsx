@@ -8,7 +8,20 @@ const QuestionPageContent: React.FC<{ id: string }> = ({ id }) => {
     { id },
   ]);
 
-  if (!isLoading && !data) {
+  console.log("data :>> ", data);
+
+  const { mutate, data: voteResponse } = trpc.useMutation(
+    "questions.vote-on-poll",
+    {
+      onSuccess: () => window.location.reload(),
+    }
+  );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!data || !data.question) {
     return <div>No questions found!</div>;
   }
 
@@ -17,9 +30,29 @@ const QuestionPageContent: React.FC<{ id: string }> = ({ id }) => {
       {data?.isOwner && <div>you created this poll</div>}
       <div className="text-2xl font-bold">{data?.question?.question}</div>
       <div>
-        {(data?.question?.options as string[])?.map((item, idx) => (
-          <div key={idx}>{(item as any).option}</div>
-        ))}
+        {(data?.question?.options as string[])?.map((item, idx) => {
+          if (data?.isOwner || data?.vote) {
+            return (
+              <div
+                className={data?.vote?.choice === idx ? "underline" : ""}
+                key={idx}
+              >
+                {(item as any).option} - {data?.votes?.[idx]?._count ?? 0}{" "}
+                vote(s)
+              </div>
+            );
+          }
+          return (
+            <button
+              key={idx}
+              onClick={() =>
+                mutate({ questionId: data?.question!.id, option: idx })
+              }
+            >
+              {(item as any).option}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

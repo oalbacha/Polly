@@ -37,22 +37,44 @@ export const questionRouter = createRouter()
           voterToken: ctx.token,
         },
       });
-      return { question, vote: myVote, isOwner: question?.ownerToken === ctx.token };
+      const rest = {
+        question,
+        vote: myVote,
+        isOwner: question?.ownerToken === ctx.token,
+      };
+
+      if (rest.vote || rest.isOwner) {
+        const votes = await prisma.vote.groupBy({
+          by: ["choice"],
+          where: {
+            questionId: input.id,
+          },
+          _count: true,
+        });
+        return {
+          ...rest,
+          votes,
+        };
+      }
+      return { ...rest, votes: undefined };
     },
   })
-  .mutation("vote", {
-    input: createPollValidator,
+  .mutation("vote-on-poll", {
+    input: z.object({
+      questionId: z.string(),
+      option: z.number().min(0).max(10),
+    }),
     async resolve({ input, ctx }) {
       if (!ctx.token) return { error: "Unauthorized" };
-      return await prisma.pollQuestion.create({
+      return await prisma.vote.create({
         data: {
-          question: input.question,
-          options: input.options,
-          ownerToken: ctx.token,
+          questionId: input.questionId,
+          choice: input.option,
+          voterToken: ctx.token,
         },
       });
     },
-  });
+  })
   .mutation("create", {
     input: createPollValidator,
     async resolve({ input, ctx }) {
