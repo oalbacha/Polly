@@ -1,18 +1,12 @@
 import React from "react";
-import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createPollValidator,
   CreatePollInputType,
 } from "../shared/create-poll-validator";
-
-type Inputs = {
-  question: string;
-  option1: string;
-  option2: string;
-  fieldArray: { options: string }[];
-};
+import { ErrorMessage } from "@hookform/error-message";
 
 const PollForm: React.FC = () => {
   const { mutate, isLoading } = trpc.useMutation("questions.create", {
@@ -24,13 +18,30 @@ const PollForm: React.FC = () => {
   const {
     register,
     handleSubmit,
+    clearErrors,
+    setError,
     control,
-    reset,
     watch,
     formState: { errors },
   } = useForm<CreatePollInputType>({
+    defaultValues: {
+      question: "",
+      options: [],
+    },
     resolver: zodResolver(createPollValidator),
   });
+  console.log("errors:", errors);
+
+  React.useEffect(() => {
+    setError("options", {
+      type: "manual",
+      message: "Options must be a minimum of 2 and a maximum of 5",
+    });
+    setError("question", {
+      type: "manual",
+      message: "The title must be a minimum of 5 characters long",
+    });
+  }, [setError]);
 
   const { fields, append, remove } = useFieldArray<CreatePollInputType>({
     control,
@@ -40,7 +51,7 @@ const PollForm: React.FC = () => {
     },
   });
 
-  const onSubmit = (data: Inputs) => console.log("data", data);
+  const onSubmit = (data: CreatePollInputType) => console.log("data", data);
   const watchFieldArray = watch("options");
   const controlledFields = fields.map((field, index) => {
     return {
@@ -52,7 +63,7 @@ const PollForm: React.FC = () => {
   return (
     <form className="w-1/2" onSubmit={handleSubmit((data) => mutate(data))}>
       <div className="">
-        <div className="max-w-lg p-5">
+        <div className="max-w-[35rem] p-5">
           <div className="grid grid-cols-1 gap-y-3 justify-items-end">
             <label className="relative flex items-center w-full">
               <span className="w-[20%] p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
@@ -61,50 +72,35 @@ const PollForm: React.FC = () => {
               <input
                 {...register("question")}
                 type="text"
-                className="block w-[80%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="block w-[75%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
-              {errors.question && (
-                <p className="absolute text-red-400 right-2">
-                  {errors["question"]?.message}
-                </p>
-              )}
             </label>
-            <div className="relative grid w-[80%] gap-y-3">
-              <label className="flex">
-                <span className="w-20 p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
-                  Option 1
-                </span>
-                <input
-                  {...register("options.0.option")}
-                  type="text"
-                  className="flex-1 block py-2 text-sm border-2 border-gray-300 shadow-sm w-[70%] rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
-              </label>
-              <label className="flex">
-                <span className="w-20 p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
-                  Option 2
-                </span>
-                <input
-                  {...register("options.1.option")}
-                  type="text"
-                  className="block flex-1 w-[70%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
-              </label>
+            <div className="relative flex flex-col w-[80%] gap-y-3 aspect-[4/1]">
               {controlledFields.map((field, index) => {
                 return (
-                  <div key={field.id} className="relative">
-                    <label className="flex items-center flex-1 gap-y-3">
-                      <span className="w-20 p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
-                        Option {index + 3}
-                      </span>
-                      <input
-                        type="text"
-                        className="block flex-1 w-[70%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        {...register(`options.${index}.option` as const)}
-                      />
-                    </label>
+                  <div key={field.id} className="flex items-center">
+                    <div className="relative flex flex-col items-center justify-between w-full">
+                      <div className="flex items-center justify-between w-full">
+                        <label className="flex items-center flex-1 w-full gap-y-3">
+                          <span className="w-20 p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
+                            Option {index + 1}
+                          </span>
+                          <input
+                            type="text"
+                            className="relative flex-1 block py-2 mr-[3px] text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            {...register(`options.${index}.option` as const)}
+                          />
+                          {errors.options[index] && (
+                            <p className="absolute text-xs italic text-red-400 right-3">
+                              {errors.options[index]?.option?.message}
+                            </p>
+                          )}
+                        </label>
+                      </div>
+                    </div>
                     <button
-                      className="absolute text-gray-500 bottom-2 -right-9"
+                      title="remove item"
+                      className="text-gray-500"
                       type="button"
                       onClick={() => remove(index)}
                     >
@@ -128,7 +124,8 @@ const PollForm: React.FC = () => {
               })}
               <button
                 className="absolute bottom-0 -left-12"
-                disabled={fields.length === 3}
+                title="add options"
+                disabled={fields.length === 5}
                 type="button"
                 onClick={() => append({ option: "" })}
               >
@@ -149,12 +146,28 @@ const PollForm: React.FC = () => {
               </button>
             </div>
             <input
-              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-7"
               type="submit"
             />
           </div>
         </div>
       </div>
+      {errors ? (
+        <ul className="m-5 text-sm italic text-red-400">
+          {!!errors.question?.message && (
+            <li>
+              {"• "}
+              <ErrorMessage errors={errors} name="question" />
+            </li>
+          )}
+          {!!errors.options?.message && (
+            <li>
+              {"• "}
+              <ErrorMessage errors={errors} name="options" />
+            </li>
+          )}
+        </ul>
+      ) : null}
     </form>
   );
 };
