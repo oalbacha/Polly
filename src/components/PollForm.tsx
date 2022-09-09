@@ -44,13 +44,17 @@ const PollForm: React.FC = () => {
     };
   });
 
-  const { mutate, isLoading, data } = trpc.useMutation("questions.create", {
-    onSuccess: (data) => {
-      console.log("trpc data: ", data);
-      router.push(`/question/${data.id}`);
-      reset();
-    },
-  });
+  const { mutate, isLoading, data, error } = trpc.useMutation(
+    "questions.create",
+    {
+      onSuccess: (data) => {
+        console.log("trpc data: ", data);
+        router.push(`/question/${data.id}`);
+        reset();
+      },
+    }
+  );
+  if (error) console.log("error :>> ", error);
 
   if (isLoading || data) return <div>Loading...</div>;
 
@@ -58,18 +62,33 @@ const PollForm: React.FC = () => {
     console.log("hook form data", data);
 
   return (
-    <form className="w-1/2" onSubmit={handleSubmit((data) => mutate(data))}>
+    <form
+      className="w-1/2"
+      onSubmit={handleSubmit((data) =>
+        mutate({
+          question: data.question,
+          options: data.options,
+          endsAt: new Date(data.endsAt).toISOString(),
+        })
+      )}
+    >
       <div className="">
         <div className="max-w-[35rem] p-5">
           <div className="grid grid-cols-1 gap-y-5 justify-items-end">
             <label className="relative flex items-center w-full">
               <span className="w-[20%] p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
-                When is your event?
+                End Date:
               </span>
               <input
                 type="date"
+                {...register("endsAt")}
                 className="relative block w-[75%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
+              {errors?.endsAt && errors?.endsAt?.message && (
+                <div className="absolute text-xs italic text-red-400 right-8">
+                  {errors?.endsAt?.message}
+                </div>
+              )}
             </label>
             <label className="relative flex items-center w-full">
               <span className="w-[20%] p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">

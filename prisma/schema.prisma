@@ -15,7 +15,7 @@ datasource db {
 model PollQuestion {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  endsAt DateTime @default(now())
+  endsAt DateTime?
   question String @db.VarChar(5000)
   ownerToken String @db.VarChar(255)
   options Json
