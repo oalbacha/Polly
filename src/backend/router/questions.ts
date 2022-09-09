@@ -84,6 +84,7 @@ export const questionRouter = createRouter()
           question: input.question,
           options: input.options,
           ownerToken: ctx.token,
+          endsAt: input.endsAt,
         },
       });
     },

@@ -6,7 +6,6 @@ import {
   createPollValidator,
   CreatePollInputType,
 } from "../shared/create-poll-validator";
-import { ErrorMessage } from "@hookform/error-message";
 import { useRouter } from "next/router";
 
 const PollForm: React.FC = () => {
@@ -15,7 +14,6 @@ const PollForm: React.FC = () => {
   const {
     register,
     handleSubmit,
-    setError,
     reset,
     control,
     watch,
@@ -36,9 +34,6 @@ const PollForm: React.FC = () => {
   const { fields, append, remove } = useFieldArray<CreatePollInputType>({
     control,
     name: "options",
-    rules: {
-      minLength: 4,
-    },
   });
 
   const watchFieldArray = watch("options");
@@ -48,19 +43,6 @@ const PollForm: React.FC = () => {
       ...watchFieldArray[index],
     };
   });
-
-  console.log("errors:", errors);
-
-  React.useEffect(() => {
-    setError("options", {
-      type: "manual",
-      message: "Options must be a minimum of 2 and a maximum of 5",
-    });
-    setError("question", {
-      type: "manual",
-      message: "The title must be a minimum of 5 characters long",
-    });
-  }, [setError]);
 
   const { mutate, isLoading, data } = trpc.useMutation("questions.create", {
     onSuccess: (data) => {
@@ -79,7 +61,16 @@ const PollForm: React.FC = () => {
     <form className="w-1/2" onSubmit={handleSubmit((data) => mutate(data))}>
       <div className="">
         <div className="max-w-[35rem] p-5">
-          <div className="grid grid-cols-1 gap-y-3 justify-items-end">
+          <div className="grid grid-cols-1 gap-y-5 justify-items-end">
+            <label className="relative flex items-center w-full">
+              <span className="w-[20%] p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
+                When is your event?
+              </span>
+              <input
+                type="date"
+                className="relative block w-[75%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </label>
             <label className="relative flex items-center w-full">
               <span className="w-[20%] p-2 text-sm text-center text-gray-700 whitespace-no-wrap bg-gray-300 border-2 border-gray-300 shadow-sm rounded-l-md">
                 Poll Title
@@ -87,10 +78,15 @@ const PollForm: React.FC = () => {
               <input
                 {...register("question")}
                 type="text"
-                className="block w-[75%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="relative block w-[75%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
+              {errors?.question && errors?.question?.message && (
+                <div className="absolute text-xs italic text-red-400 right-8">
+                  {errors?.question?.message}
+                </div>
+              )}
             </label>
-            <div className="relative flex flex-col w-[80%] gap-y-3 aspect-[4/1]">
+            <div className="relative flex flex-col w-[80%] gap-y-5 aspect-[4/1]">
               {controlledFields.map((field, index) => {
                 return (
                   <div key={field.id} className="flex items-center">
@@ -138,7 +134,7 @@ const PollForm: React.FC = () => {
                 );
               })}
               <button
-                className="absolute bottom-0 -left-12"
+                className="absolute top-7 -left-12"
                 title="add options"
                 disabled={fields.length === 5}
                 type="button"
@@ -167,22 +163,11 @@ const PollForm: React.FC = () => {
           </div>
         </div>
       </div>
-      {errors ? (
-        <ul className="m-5 text-sm italic text-red-400">
-          {!!errors.question?.message && (
-            <li>
-              {"• "}
-              <ErrorMessage errors={errors} name="question" />
-            </li>
-          )}
-          {!!errors.options?.message && (
-            <li>
-              {"• "}
-              <ErrorMessage errors={errors} name="options" />
-            </li>
-          )}
-        </ul>
-      ) : null}
+      {errors?.options && errors?.options?.message && (
+        <div className="ml-5 text-sm italic text-red-400">
+          {errors?.options?.message}
+        </div>
+      )}
     </form>
   );
 };
