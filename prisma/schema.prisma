@@ -20,7 +20,6 @@ model PollQuestion {
   ownerToken String @db.VarChar(255)
   options Json
   Vote Vote[]
-  Optionz Optionz[]
 
   @@index([ownerToken])
 }
@@ -38,13 +37,3 @@ model Vote {
   @@index([questionId])
 }
 
-model Optionz {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  question PollQuestion @relation(fields: [questionId], references: [id])
-  text String @db.VarChar(5000)
-  questionId String
-
-  @@unique([questionId])
-  @@index([questionId])
-}

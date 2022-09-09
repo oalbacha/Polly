@@ -7,10 +7,6 @@ export const createPollValidator = z.object({
     .min(2)
     .max(5),
   endsAt: z.string(),
-  optionz: z
-    .array(z.object({ text: z.string().min(2).max(500) }))
-    .min(2)
-    .max(5),
 });
 
 export type CreatePollInputType = z.infer<typeof createPollValidator>;

@@ -31,12 +31,14 @@ export const questionRouter = createRouter()
           id: input.id,
         },
       });
+
       const myVote = await prisma.vote.findFirst({
         where: {
           questionId: input.id,
           voterToken: ctx.token,
         },
       });
+
       const rest = {
         question,
         vote: myVote,
