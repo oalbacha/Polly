@@ -84,6 +84,7 @@ export const pollRouter = createRouter()
         },
         include: {
           options: true,
+          votes: true,
         },
       });
 
@@ -94,9 +95,22 @@ export const pollRouter = createRouter()
         },
       });
 
-      const today = new Date();
+      const voteMetaData = await prisma.choice.aggregate({
+        where: {
+          pollId: input.id,
+        },
+        _max: {
+          createdAt: true,
+        },
+        _count: {
+          voterToken: true,
+          id: true,
+        },
+      });
+
       const rest = {
         poll,
+        voteMetaData,
         vote: myVote,
         expired: poll?.endsAt && poll?.endsAt?.getTime() < Date.now(),
         isOwner: poll?.ownerToken === ctx.token,

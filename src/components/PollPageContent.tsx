@@ -6,6 +6,7 @@ import PollOption from "./PollOption";
 import PollResults from "./PollResults";
 
 const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
+  const [viewPollResults, setViewPollResults] = useState(false);
   const { data, isLoading, isError, error } = trpc.useQuery([
     "polls.get-by-id",
     { id },
@@ -23,34 +24,47 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
         <PublishButton id={data.poll.id} />
       )}
       <div className="text-2xl font-bold">{data?.poll?.text}</div>
-      <div className="flex gap-5 font-medium">
-        {(data?.poll?.options).map((item, idx) => {
-          const { vote, votes, isOwner, expired, poll } = data;
-          console.log("data:", data);
-          if (vote || isOwner || expired) {
-            return (
-              <PollOption
-                poll={poll as object}
-                key={idx}
-                optionId={vote?.optionId}
-                itemId={item.id}
-                itemText={item.text}
-                voteCount={votes?.[idx]?._count}
-              />
-            );
-          } else {
-            return (
-              <VoteButton
-                key={idx}
-                itemText={item.text}
-                pollId={poll?.id as string}
-                optionId={item.id}
-              />
-            );
-          }
-        })}
+      <div className="flex items-start justify-between w-2/3 gap-20 p-4 border-2 border-red-500">
+        <div className="flex gap-5 font-medium">
+          {(data?.poll?.options).map((item, idx) => {
+            const { vote, votes, isOwner, expired, poll, voteMetaData } = data;
+            console.log("data:", data);
+            if (vote || isOwner || expired) {
+              return (
+                <PollOption
+                  poll={poll as object}
+                  key={idx}
+                  optionId={vote?.optionId}
+                  itemId={item.id}
+                  itemText={item.text}
+                  voteCount={votes?.[idx]?._count}
+                />
+              );
+            } else {
+              return (
+                <VoteButton
+                  key={idx}
+                  itemText={item.text}
+                  pollId={poll?.id as string}
+                  optionId={item.id}
+                />
+              );
+            }
+          })}
+        </div>
+
+        {!viewPollResults && (
+          <button onClick={() => setViewPollResults(true)}>View Results</button>
+        )}
+
+        {viewPollResults && (
+          <PollResults
+            voteMetaData={data.voteMetaData}
+            poll={data.poll}
+            votes={data.votes}
+          />
+        )}
       </div>
-      <PollResults poll={data.poll} votes={data.votes} />
     </div>
   );
 };
