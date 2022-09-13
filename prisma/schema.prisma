@@ -12,28 +12,38 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
-model PollQuestion {
+model Poll {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  text      String
   endsAt DateTime?
-  question String @db.VarChar(5000)
+  isPublished Boolean @default(false)
   ownerToken String @db.VarChar(255)
-  options Json
-  Vote Vote[]
-
-  @@index([ownerToken])
+  options Option[]
+  votes Choice[]
 }
 
-model Vote {
+model Option {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  choice Int
-  voterToken String @db.VarChar(255)
-  question PollQuestion @relation(fields: [questionId], references: [id])
-  questionId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  text       String
+  poll Poll @relation(fields: [pollId], references: [id])
+  pollId String
+  votes Choice[]
+}
 
-  @@unique([voterToken, questionId])
+model Choice {
+  id        String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  voterToken String @db.VarChar(255)
+  poll Poll @relation(fields: [pollId], references: [id])
+  pollId String
+  option Option @relation(fields: [optionId], references: [id])
+  optionId String
+  @@unique([voterToken, pollId])
   @@index([voterToken])
-  @@index([questionId])
+  @@index([optionId])
 }
 

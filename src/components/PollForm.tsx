@@ -20,12 +20,12 @@ const PollForm: React.FC = () => {
     formState: { errors },
   } = useForm<CreatePollInputType>({
     defaultValues: {
-      question: "",
+      text: "",
       options: [
         {
-          option: "",
+          text: "",
         },
-        { option: "" },
+        { text: "" },
       ],
     },
     resolver: zodResolver(createPollValidator),
@@ -44,16 +44,13 @@ const PollForm: React.FC = () => {
     };
   });
 
-  const { mutate, isLoading, data, error } = trpc.useMutation(
-    "questions.create",
-    {
-      onSuccess: (data) => {
-        console.log("trpc data: ", data);
-        router.push(`/question/${data.id}`);
-        reset();
-      },
-    }
-  );
+  const { mutate, isLoading, data, error } = trpc.useMutation("polls.create", {
+    onSuccess: (data) => {
+      console.log("trpc data: ", data);
+      router.push(`/poll/${data.id}`);
+      reset();
+    },
+  });
   if (error) console.log("error :>> ", error);
 
   if (isLoading || data) return <div>Loading...</div>;
@@ -66,7 +63,7 @@ const PollForm: React.FC = () => {
       className="w-1/2"
       onSubmit={handleSubmit((data) =>
         mutate({
-          question: data.question,
+          text: data.text,
           options: data.options,
           endsAt: new Date(data.endsAt).toISOString(),
         })
@@ -95,13 +92,13 @@ const PollForm: React.FC = () => {
                 Poll Title
               </span>
               <input
-                {...register("question")}
+                {...register("text")}
                 type="text"
                 className="relative block w-[75%] py-2 text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
-              {errors?.question && errors?.question?.message && (
+              {errors?.text && errors?.text?.message && (
                 <div className="absolute text-xs italic text-red-400 right-8">
-                  {errors?.question?.message}
+                  {errors?.text?.message}
                 </div>
               )}
             </label>
@@ -118,11 +115,11 @@ const PollForm: React.FC = () => {
                           <input
                             type="text"
                             className="relative flex-1 block py-2 mr-[3px] text-sm border-2 border-gray-300 shadow-sm rounded-r-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            {...register(`options.${index}.option` as const)}
+                            {...register(`options.${index}.text` as const)}
                           />
                           {errors && errors?.options?.[index] && (
                             <p className="absolute text-xs italic text-red-400 right-3">
-                              {errors.options[index]?.option?.message}
+                              {errors.options[index]?.text?.message}
                             </p>
                           )}
                         </label>
@@ -157,7 +154,7 @@ const PollForm: React.FC = () => {
                 title="add options"
                 disabled={fields.length === 5}
                 type="button"
-                onClick={() => append({ option: "" })}
+                onClick={() => append({ text: "" })}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
