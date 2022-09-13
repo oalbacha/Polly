@@ -24,7 +24,7 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
         <PublishButton id={data.poll.id} />
       )}
       <div className="text-2xl font-bold">{data?.poll?.text}</div>
-      <div className="flex items-start justify-between w-2/3 gap-20 p-4 border-2 border-red-500">
+      <div className="flex items-start justify-between w-2/3 gap-20 p-4">
         <div className="flex gap-5 font-medium">
           {(data?.poll?.options).map((item, idx) => {
             const { vote, votes, isOwner, expired, poll, voteMetaData } = data;
@@ -53,16 +53,21 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
           })}
         </div>
 
-        {!viewPollResults && (
-          <button onClick={() => setViewPollResults(true)}>View Results</button>
-        )}
-
-        {viewPollResults && (
-          <PollResults
-            voteMetaData={data.voteMetaData}
-            poll={data.poll}
-            votes={data.votes}
-          />
+        {Array.isArray(data.votes) && data.votes.length > 0 && (
+          <div className="flex w-full flexx-col">
+            {!viewPollResults && (
+              <button onClick={() => setViewPollResults(true)}>
+                View Results
+              </button>
+            )}
+            {viewPollResults && (
+              <PollResults
+                voteMetaData={data.voteMetaData}
+                poll={data.poll}
+                votes={data.votes}
+              />
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { withTRPC } from "@trpc/next";
 import { AppType } from "next/dist/shared/lib/utils";
-import type { AppRouter } from "../backend/router";
+import type { AppRouter } from "../server/router";
 import superjson from "superjson";
 import "../styles/globals.css";
 import NavBar from "../components/NavBar";

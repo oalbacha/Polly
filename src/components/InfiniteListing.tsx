@@ -40,7 +40,7 @@ function InfiniteListing() {
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold">Infinite Loading</h1>
+      <h1 className="text-3xl font-extrabold">Polls</h1>
       {status === "loading" ? (
         <p>Loading...</p>
       ) : status === "error" ? (
@@ -49,7 +49,7 @@ function InfiniteListing() {
         <>
           <div>
             <button
-              className="font-bold text-red-700"
+              className="p-1 text-gray-700 border-2 border-gray-400 rounded-md"
               onClick={() => fetchPreviousPage()}
               disabled={!hasPreviousPage || isFetchingPreviousPage}
             >
@@ -69,7 +69,7 @@ function InfiniteListing() {
           ))}
           <div>
             <button
-              className="font-bold text-red-700"
+              className="p-1 text-gray-700 border-2 border-gray-400 rounded-md"
               ref={ref}
               onClick={() => fetchNextPage()}
               disabled={!hasNextPage || isFetchingNextPage}
