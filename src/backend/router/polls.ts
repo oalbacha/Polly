@@ -93,8 +93,8 @@ export const pollRouter = createRouter()
           pollId: input.id,
         },
       });
-      const today = new Date();
 
+      const today = new Date();
       const rest = {
         poll,
         vote: myVote,

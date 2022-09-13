@@ -9,9 +9,9 @@ const Polls: NextPage = () => {
   return (
     <div className="flex flex-col gap-10 w-[95%] my-7 mx-auto">
       {/* <AllPolls /> */}
-      {/* <PollListing /> */}
-      {/* <MyPolls /> */}
-      <InfiniteListing />
+      <PollListing />
+      <MyPolls />
+      {/* <InfiniteListing /> */}
     </div>
   );
 };

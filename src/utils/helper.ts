@@ -10,3 +10,5 @@ export const shuffle = (array: any) => {
     [array[i], array[j]] = [array[j], array[i]];
   }
 };
+
+export const COLORS = ["#FA5252", "#E64980", "#63E6BE", "#7950F2", "#82C91E"];
