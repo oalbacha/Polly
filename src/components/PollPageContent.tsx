@@ -17,9 +17,17 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
   if (!data || !data.poll) return <div>No polls found!</div>;
 
   return (
-    <div className="flex flex-col p-8">
-      {data?.isOwner && <div>You created this poll</div>}
-      {data?.expired && <div>This poll has ended</div>}
+    <div className="flex flex-col gap-3 p-8">
+      {data?.isOwner && (
+        <div className="w-32 text-center bg-indigo-100 text-indigo-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-indigo-200 dark:text-indigo-900">
+          You own this poll
+        </div>
+      )}
+      {data?.expired && (
+        <div className="w-28 text-center bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">
+          Poll has ended
+        </div>
+      )}
       {data?.isOwner && !data?.poll.isPublished && !data.expired && (
         <PublishButton id={data.poll.id} />
       )}
