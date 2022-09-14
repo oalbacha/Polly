@@ -22,7 +22,7 @@ function InfiniteListing() {
     [
       "polls.get-infinite",
       {
-        limit: 1,
+        limit: 3,
       },
     ],
     {
@@ -61,7 +61,22 @@ function InfiniteListing() {
           {data?.pages.map((page) => (
             <React.Fragment key={page.nextCursor}>
               {page.items.map((poll) => (
-                <p key={poll.id}>{poll.text}</p>
+                <Link key={poll.id} href={`/poll/${poll.id}`}>
+                  <a className="flex flex-col gap-5">
+                    <p
+                      className={
+                        poll.isPublished
+                          ? "block text-sm font-bold tracking-wide uppercase"
+                          : "block text-sm font-bold tracking-wide uppercase text-red-400"
+                      }
+                    >
+                      {poll.text}
+                    </p>
+                    <p className="text-sm italic font-thin">
+                      {moment(poll.createdAt).format("LL")}
+                    </p>
+                  </a>
+                </Link>
               ))}
             </React.Fragment>
           ))}
