@@ -46,7 +46,6 @@ const PollForm: React.FC = () => {
 
   const { mutate, isLoading, data, error } = trpc.useMutation("polls.create", {
     onSuccess: (data) => {
-      console.log("trpc data: ", data);
       router.push(`/poll/${data.id}`);
       reset();
     },

@@ -29,8 +29,6 @@ function InfiniteListing() {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
-  console.log("data:", data);
-  console.log("hasNextPage", hasNextPage);
 
   React.useEffect(() => {
     if (inView) {

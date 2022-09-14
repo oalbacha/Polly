@@ -3,6 +3,7 @@ import { trpc } from "../utils/trpc";
 import Link from "next/link";
 import moment from "moment";
 
+// public published polls
 const PollListing = () => {
   const { isLoading, data } = trpc.useQuery(["polls.get-all-published"]);
   if (isLoading || !data) return <div>Loading...</div>;

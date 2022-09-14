@@ -6,7 +6,6 @@ import { trpc } from "../utils/trpc";
 
 const MyPolls: NextPage = () => {
   const { isLoading, data } = trpc.useQuery(["polls.get-all-mine"]);
-  console.log("data:", data);
   if (isLoading || !data) return <div>Loading...</div>;
 
   return (

@@ -20,7 +20,7 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
     <div className="flex flex-col p-8">
       {data?.isOwner && <div>You created this poll</div>}
       {data?.expired && <div>This poll has ended</div>}
-      {data?.isOwner && !data?.poll.isPublished && (
+      {data?.isOwner && !data?.poll.isPublished && !data.expired && (
         <PublishButton id={data.poll.id} />
       )}
       <div className="text-2xl font-bold">{data?.poll?.text}</div>
@@ -28,7 +28,6 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
         <div className="flex gap-5 font-medium">
           {(data?.poll?.options).map((item, idx) => {
             const { vote, votes, isOwner, expired, poll, voteMetaData } = data;
-            console.log("data:", data);
             if (vote || isOwner || expired) {
               return (
                 <PollOption
@@ -56,7 +55,10 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
         {Array.isArray(data.votes) && data.votes.length > 0 && (
           <div className="flex w-full flexx-col">
             {!viewPollResults && (
-              <button onClick={() => setViewPollResults(true)}>
+              <button
+                className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-7"
+                onClick={() => setViewPollResults(true)}
+              >
                 View Results
               </button>
             )}

@@ -39,7 +39,6 @@ export const pollRouter = createRouter()
         const nextItem = items.pop();
         nextCursor = nextItem!.id;
       }
-      console.log("length", items);
       return {
         items,
         nextCursor,
