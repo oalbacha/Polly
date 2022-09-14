@@ -49,10 +49,16 @@ As a user, I have a tab for to viiew my own poll I have created
 - As a user, I can tell which poll is or if poll has expired
 
 <img width="274" alt="image" src="https://user-images.githubusercontent.com/17005317/190025426-08bea90e-e350-4e0d-a920-bb4cf9ce5b89.png">
+
 - As a user, I can not vote if I am the owner, if I've voted before or the poll has expired
 - As a user, if allowed, I can view results of the poll. That's if it has ended, you own it or you have submitted a vote
 
 <img width="633" alt="image" src="https://user-images.githubusercontent.com/17005317/190025515-96e836e7-d89f-409b-bd9e-efb56f3b95e8.png">
+
+- As a user I can hover on the chart section for the poll option to see more details and how many votes
+
+<img width="414" alt="image" src="https://user-images.githubusercontent.com/17005317/190073119-cfe4ae7f-e032-4981-b52b-cd51e8f167b7.png">
+
 
 ## Voting
 

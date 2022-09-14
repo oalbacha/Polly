@@ -87,7 +87,7 @@ const PollResults: React.FC<{
               {active ? (
                 <>
                   <Text
-                    className="text-3xl font-extrabold text-gray-700 uppercas"
+                    className="text-3xl font-extrabold text-gray-700 uppercase"
                     fill={active.color}
                     textAnchor="middle"
                     dy={-20}
