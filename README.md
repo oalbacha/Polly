@@ -33,7 +33,7 @@ yarn dev
 
 ## My polls
 
-As a user, I have a tab for to viiew my own poll I have created
+As a user, I have a tab for to view my own poll I have created
 
 <img width="304" alt="image" src="https://user-images.githubusercontent.com/17005317/190024393-3d0db9cf-dd3d-47f9-be07-83bba4f1d027.png">
 
@@ -46,11 +46,13 @@ As a user, I have a tab for to viiew my own poll I have created
 ## The poll content page
 
 - As a user and depending on who I am based on my token, I can either see the poll and its options and results (PollOption) or I can see the poll with its options as buttons to be able to vote (VoteButton)
+
 - As a user, I can tell which poll is or if poll has expired
 
 <img width="274" alt="image" src="https://user-images.githubusercontent.com/17005317/190025426-08bea90e-e350-4e0d-a920-bb4cf9ce5b89.png">
 
 - As a user, I can not vote if I am the owner, if I've voted before or the poll has expired
+
 - As a user, if allowed, I can view results of the poll. That's if it has ended, you own it or you have submitted a vote
 
 <img width="633" alt="image" src="https://user-images.githubusercontent.com/17005317/190025515-96e836e7-d89f-409b-bd9e-efb56f3b95e8.png">
