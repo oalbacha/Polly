@@ -44,14 +44,16 @@ const PollResults: React.FC<{
   return (
     <main className="flex flex-col w-1/2 gap-10">
       <div className="flex flex-col gap-3">
-        <div>
+        <div className="ml-2">
           <h2 className="text-xl font-semibold text-gray-500">Total Votes</h2>
           <div className="text-3xl font-bold text-gray-700">
             {voteMetaData._count.id}
           </div>
         </div>
 
-        <p>{moment(voteMetaData._max.createdAt).format("LLL")}</p>
+        <p className="ml-2 text-sm text-gray-500">
+          Last vote was at {moment(voteMetaData._max.createdAt).format("LLL")}
+        </p>
         <div className="flex items-center gap-7">
           <svg width={width} height={width}>
             <Group top={half} left={half}>
@@ -145,7 +147,11 @@ const PollResults: React.FC<{
                         d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
                       />
                     </svg>
-                    <p className="text-sm capitalize">{item.optionText}</p>
+                    <p className="text-sm text-gray-500 capitalize">
+                      <span className="font-bold">{item.optionText}</span>
+                      {" - "}
+                      <span>{item._count} votes</span>
+                    </p>
                   </li>
                 </div>
               );

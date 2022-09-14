@@ -32,7 +32,7 @@ const PollPageContent: React.FC<{ id: string }> = ({ id }) => {
         <PublishButton id={data.poll.id} />
       )}
       <div className="text-2xl font-bold">{data?.poll?.text}</div>
-      <div className="flex items-start justify-between w-2/3 gap-20 p-4">
+      <div className="flex items-start justify-between w-[80%] gap-20 p-4">
         <div className="flex gap-5 font-medium">
           {(data?.poll?.options).map((item, idx) => {
             const { vote, votes, isOwner, expired, poll, voteMetaData } = data;

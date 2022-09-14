@@ -11,7 +11,11 @@ const PollOption: React.FC<{
 }> = ({ optionId, itemId, itemText, voteCount, poll }) => {
   return (
     <div>
-      <div className={optionId === itemId ? "underline" : ""}>{itemText}</div>
+      <div
+        className={optionId === itemId ? "underline capitalize" : "capitalize"}
+      >
+        {itemText}
+      </div>
     </div>
   );
 };
