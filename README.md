@@ -59,6 +59,11 @@ As a user, I have a tab for to viiew my own poll I have created
 - As a user I can vote on public published polls
 - options are randomized on each screen render
 
+<img width="606" alt="image" src="https://user-images.githubusercontent.com/17005317/190071937-dca45ad8-8a6b-477a-8bfc-a26831a1e927.png">
+
+<img width="597" alt="image" src="https://user-images.githubusercontent.com/17005317/190072026-f857f8bd-9098-4e65-b37c-3728985f5b79.png">
+
+
 ## Things I Learned
 
 I had a lot of fun building out the features of this project. I hit some roadblocks and the project is in way ready for production. It probably needs a lot of testing of edge cases and fixing some bugs that are still present. I'd like to add proper state management to the app as there's quite a bit of state especially on the poll content page. I'd probably revisit all the types and make sure the app is typed properly. I would spend some time testing the main parts of the app.
