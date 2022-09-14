@@ -29,7 +29,7 @@ yarn dev
 
 ## Infinite scrolling public published polls
 
-<img width="235" alt="image" src="https://user-images.githubusercontent.com/17005317/190024267-65fc45d0-30ef-42de-93d4-390878382ab8.png">
+<img width="512" alt="image" src="https://user-images.githubusercontent.com/17005317/190070919-e5d69e3a-6ad7-4d18-a08a-00f115ba838d.png">
 
 ## My polls
 
@@ -53,6 +53,11 @@ As a user, I have a tab for to viiew my own poll I have created
 - As a user, if allowed, I can view results of the poll. That's if it has ended, you own it or you have submitted a vote
 
 <img width="633" alt="image" src="https://user-images.githubusercontent.com/17005317/190025515-96e836e7-d89f-409b-bd9e-efb56f3b95e8.png">
+
+## Voting
+
+- As a user I can vote on public published polls
+- options are randomized on each screen render
 
 ## Things I Learned
 
